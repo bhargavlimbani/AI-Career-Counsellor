@@ -25,8 +25,8 @@
 | **Enrollment No.** | **92301733029** |
 | **Project** | **AI Career Counsellor** |
 | **Technology** | HTML, CSS, JavaScript, Gemini API |
-| **Demo Video** | 🔗 **[Add your demo video link here](#)** |
-| **GitHub Repository** | 🔗 **[Add your GitHub repository link here](#)** |
+| **Demo Video** | 🔗 **[https://drive.google.com/file/d/1qk47lxZliMiWVWMtfo3sHDSpBHv6h5ka/view?usp=sharing](#)** |
+| **GitHub Repository** | 🔗 **[https://github.com/bhargavlimbani/AI-Career-Counsellor.git](#)** |
 
 ---
 
