@@ -423,13 +423,13 @@ The demo video demonstrates:
 8. Persona comparison
 9. Prompt Card framework
 
-**Demo Video:** [Add your demo video link here](#)
+**Demo Video:** [https://drive.google.com/file/d/1qk47lxZliMiWVWMtfo3sHDSpBHv6h5ka/view?usp=sharing](#)
 
 ---
 
 ## 🔗 GitHub Repository
 
-**Repository:** [Add your GitHub repository link here](#)
+**Repository:** [https://github.com/bhargavlimbani/AI-Career-Counsellor.git](#)
 
 ---
 
