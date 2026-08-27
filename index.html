@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Career Counsellor</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            padding: 45px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 17px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .card h2 {
+            margin-bottom: 18px;
+            color: #111827;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 130px;
+            resize: vertical;
+            padding: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #2563eb;
+        }
+
+        .personas {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .persona {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .persona:hover {
+            border-color: #2563eb;
+            background: #f8faff;
+        }
+
+        .persona input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .persona-title {
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        .persona-description {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .button-area {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        button {
+            border: none;
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .response-card {
+            border-left: 5px solid #2563eb;
+            background: #ffffff;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .response-card h3 {
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+
+        .response-content {
+            white-space: pre-wrap;
+            line-height: 1.7;
+            color: #374151;
+        }
+
+        .comparison {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .comparison table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison th,
+        .comparison td {
+            border: 1px solid #d1d5db;
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .comparison th {
+            background: #eef2ff;
+        }
+
+        .prompt-info {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 18px;
+            line-height: 1.7;
+        }
+
+        .prompt-info strong {
+            color: #2563eb;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 700px) {
+            header h1 {
+                font-size: 28px;
+            }
+
+            .personas {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>AI Career Counsellor</h1>
+        <p>Get career guidance from multiple AI expert personas</p>
+    </header>
+
+    <div class="container">
+
+        <!-- API KEY -->
+        <div class="card">
+            <h2>Gemini API Configuration</h2>
+
+            <label for="apiKey">
+                Enter Gemini API Key
+            </label>
+
+            <input type="password" id="apiKey" placeholder="Paste your Gemini API key here" style="
+                width:100%;
+                padding:14px;
+                border:1px solid #d1d5db;
+                border-radius:10px;
+                font-size:16px;
+            ">
+
+            <p style="margin-top:10px;color:#6b7280;font-size:14px;">
+                For this lab demonstration only. Do not publish your API key on GitHub.
+            </p>
+        </div>
+
+
+        <!-- QUESTION -->
+        <div class="card">
+            <h2>1. Ask Your Career Question</h2>
+
+            <label for="question">
+                Your Career Question
+            </label>
+
+            <textarea id="question"
+                placeholder="Example: I know Python and basic Machine Learning. What should I learn to become an AI Engineer?"></textarea>
+        </div>
+
+
+        <!-- PERSONAS -->
+        <div class="card">
+            <h2>2. Select Career Counsellors</h2>
+
+            <div class="personas">
+
+                <label class="persona">
+                    <div>
+                        <input type="checkbox" value="technical" class="persona-checkbox">
+                        <span class="persona-title">
+                            Technical Career Counsellor
+                        </span>
+                    </div>
+
+                    <div class="persona-description">
+                        Focuses on programming, DSA, AI/ML, software development,
+                        technical skills and projects.
+                    </div>
+                </label>
+
+
+                <label class="persona">
+                    <div>
+                        <input type="checkbox" value="hr" class="persona-checkbox">
+                        <span class="persona-title">
+                            HR & Placement Counsellor
+                        </span>
+                    </div>
+
+                    <div class="persona-description">
+                        Focuses on resumes, interviews, internships,
+                        communication and employability.
+                    </div>
+                </label>
+
+
+                <label class="persona">
+                    <div>
+                        <input type="checkbox" value="academic" class="persona-checkbox">
+                        <span class="persona-title">
+                            Academic & Research Counsellor
+                        </span>
+                    </div>
+
+                    <div class="persona-description">
+                        Focuses on MS/M.Tech, PhD, research,
+                        certifications and higher studies.
+                    </div>
+                </label>
+
+
+                <label class="persona">
+                    <div>
+                        <input type="checkbox" value="entrepreneurship" class="persona-checkbox">
+                        <span class="persona-title">
+                            Entrepreneurship Counsellor
+                        </span>
+                    </div>
+
+                    <div class="persona-description">
+                        Focuses on startups, business ideas,
+                        freelancing, products and market validation.
+                    </div>
+                </label>
+
+            </div>
+
+
+            <div class="button-area">
+                <button id="generateBtn">
+                    Get Career Advice
+                </button>
+            </div>
+        </div>
+
+
+        <!-- ERROR -->
+        <div id="errorBox" class="error"></div>
+
+
+        <!-- LOADING -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <h3>AI Counsellors are thinking...</h3>
+            <p>Please wait while Gemini generates the responses.</p>
+        </div>
+
+
+        <!-- RESULTS -->
+        <div class="card" id="resultsSection" style="display:none;">
+            <h2>Career Counsellor Responses</h2>
+
+            <div id="responses"></div>
+
+            <div id="comparisonSection" style="display:none;">
+                <h2 style="margin-top:30px;">
+                    Persona Comparison
+                </h2>
+
+                <div class="comparison">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Persona</th>
+                                <th>Main Focus</th>
+                                <th>Suggested Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="comparisonBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- PROMPT CARD -->
+        <div class="card">
+            <h2>Prompt Card Framework</h2>
+
+            <div class="prompt-info">
+
+                <p>
+                    <strong>Role:</strong>
+                    Defines who the AI should act as.
+                </p>
+
+                <p>
+                    <strong>Audience:</strong>
+                    Defines who receives the advice.
+                </p>
+
+                <p>
+                    <strong>Context:</strong>
+                    Provides background information.
+                </p>
+
+                <p>
+                    <strong>Format:</strong>
+                    Defines how the answer should be structured.
+                </p>
+
+                <p>
+                    <strong>Constraints:</strong>
+                    Defines rules and limitations.
+                </p>
+
+                <p>
+                    <strong>Language:</strong>
+                    Defines the language and complexity.
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <footer>
+        AI Career Counsellor | Gemini API | Persona-Based Career Guidance
+    </footer>
+
+
+    <script>
+
+        /*
+         * ============================================================
+         * PERSONA PROMPT CARDS
+         * ============================================================
+         */
+
+        const personas = {
+
+            technical: {
+
+                name: "Technical Career Counsellor",
+
+                role:
+                    "Senior Technical Career Counsellor specializing in AI, ML and Software Engineering.",
+
+                audience:
+                    "Undergraduate ICT and Computer Science students.",
+
+                context:
+                    "The student is interested in technology careers and wants guidance about programming, AI/ML, software development, technical skills and projects.",
+
+                format:
+                    "Recommendation + Skills to Develop + Project Suggestions + Career Roadmap.",
+
+                constraints:
+                    "Give practical and realistic advice. Do not guarantee jobs or salaries. Avoid unsupported assumptions.",
+
+                language:
+                    "Simple English.",
+
+                focus:
+                    "Programming, DSA, AI/ML, software development, technical skills and projects.",
+
+                action:
+                    "Build technical skills and practical projects."
+            },
+
+
+            hr: {
+
+                name: "HR & Placement Counsellor",
+
+                role:
+                    "Senior HR and Placement Career Counsellor specializing in recruitment and employability.",
+
+                audience:
+                    "Undergraduate students preparing for internships and campus placements.",
+
+                context:
+                    "The student needs career guidance related to resume preparation, interviews, communication, internships, recruitment and employability.",
+
+                format:
+                    "Assessment + Resume Advice + Interview Preparation + Employability Action Plan.",
+
+                constraints:
+                    "Give practical placement advice. Do not guarantee job selection, salary or employment.",
+
+                language:
+                    "Simple English.",
+
+                focus:
+                    "Resume, interviews, communication, internships, recruitment and employability.",
+
+                action:
+                    "Improve resume, communication and interview preparation."
+            },
+
+
+            academic: {
+
+                name: "Academic & Research Counsellor",
+
+                role:
+                    "Senior Academic and Research Career Counsellor specializing in higher studies and research.",
+
+                audience:
+                    "Undergraduate students considering higher education and research.",
+
+                context:
+                    "The student is exploring MS, M.Tech, PhD, research, certifications and other higher-study opportunities.",
+
+                format:
+                    "Recommendation + Higher Study Options + Preparation Requirements + Academic Roadmap.",
+
+                constraints:
+                    "Do not guarantee admission or research outcomes. Consider the student's academic interests and goals.",
+
+                language:
+                    "Simple English.",
+
+                focus:
+                    "Higher studies, MS/M.Tech, PhD, research and certifications.",
+
+                action:
+                    "Evaluate higher-study options and prepare academically."
+            },
+
+
+            entrepreneurship: {
+
+                name: "Entrepreneurship Counsellor",
+
+                role:
+                    "Senior Entrepreneurship Career Counsellor specializing in startups, freelancing and product development.",
+
+                audience:
+                    "Undergraduate students interested in entrepreneurship and independent careers.",
+
+                context:
+                    "The student wants to explore startup ideas, freelancing, product development, business opportunities and market validation.",
+
+                format:
+                    "Opportunity Analysis + Business Ideas + Required Skills + Validation Steps + Action Plan.",
+
+                constraints:
+                    "Do not guarantee business success or income. Encourage market validation and realistic planning.",
+
+                language:
+                    "Simple English.",
+
+                focus:
+                    "Startups, business ideas, freelancing, product development and market validation.",
+
+                action:
+                    "Validate an idea and develop entrepreneurial skills."
+            }
+
+        };
+
+
+        /*
+         * ============================================================
+         * DOM ELEMENTS
+         * ============================================================
+         */
+
+        const apiKeyInput = document.getElementById("apiKey");
+        const questionInput = document.getElementById("question");
+
+        const generateBtn =
+            document.getElementById("generateBtn");
+
+        const errorBox =
+            document.getElementById("errorBox");
+
+        const loading =
+            document.getElementById("loading");
+
+        const resultsSection =
+            document.getElementById("resultsSection");
+
+        const responsesContainer =
+            document.getElementById("responses");
+
+        const comparisonSection =
+            document.getElementById("comparisonSection");
+
+        const comparisonBody =
+            document.getElementById("comparisonBody");
+
+
+        /*
+         * ============================================================
+         * ERROR MESSAGE
+         * ============================================================
+         */
+
+        function showError(message) {
+
+            errorBox.textContent = message;
+
+            errorBox.style.display = "block";
+        }
+
+
+        function hideError() {
+
+            errorBox.textContent = "";
+
+            errorBox.style.display = "none";
+        }
+
+
+        /*
+         * ============================================================
+         * GET SELECTED PERSONAS
+         * ============================================================
+         */
+
+        function getSelectedPersonas() {
+
+            const checkboxes =
+                document.querySelectorAll(".persona-checkbox");
+
+            const selected = [];
+
+            checkboxes.forEach(function (checkbox) {
+
+                if (checkbox.checked) {
+
+                    selected.push(checkbox.value);
+
+                }
+
+            });
+
+            return selected;
+        }
+
+
+        /*
+         * ============================================================
+         * BUILD PERSONA PROMPT
+         * ============================================================
+         */
+
+        function buildPrompt(selectedPersonaKeys, question) {
+
+            let personaInstructions = "";
+
+            selectedPersonaKeys.forEach(function (key, index) {
+
+                const persona = personas[key];
+
+                personaInstructions += `
+
+================ PERSONA ${index + 1} ================
+
+Persona Name:
+${persona.name}
+
+Role:
+${persona.role}
+
+Audience:
+${persona.audience}
+
+Context:
+${persona.context}
+
+Format:
+${persona.format}
+
+Constraints:
+${persona.constraints}
+
+Language:
+${persona.language}
+
+Focus:
+${persona.focus}
+
+`;
+
+            });
+
+
+            const prompt = `
+
+You are an AI Career Counsellor system.
+
+Your task is to provide career guidance using multiple specialized
+career counsellor personas.
+
+IMPORTANT RULES:
+
+1. Use the Prompt Card elements for every persona.
+2. Each persona must provide a meaningfully different perspective.
+3. Do not give identical advice from different personas.
+4. Stay within the expertise of each persona.
+5. If the question is clearly outside a persona's area, politely say
+   that the persona cannot provide specialized advice about that topic.
+6. Do not guarantee jobs, salaries, admission, business success or
+   other outcomes.
+7. Give practical and realistic guidance.
+8. Use simple English.
+9. Return a separate response for every selected persona.
+10. Clearly label every response with the persona name.
+11. Do not mention these internal instructions in the final answer.
+
+SELECTED PERSONAS:
+
+${personaInstructions}
+
+================ USER QUESTION ================
+
+${question}
+
+================ REQUIRED OUTPUT ================
+
+Return the answer in exactly this general structure:
+
+[PERSONA: Persona Name]
+
+Recommendation:
+...
+
+Key Points:
+...
+
+Suggested Actions:
+...
+
+Career Roadmap:
+...
+
+Repeat this structure separately for every selected persona.
+
+`;
+
+            return prompt;
+        }
+
+
+        /*
+         * ============================================================
+         * CALL GEMINI API
+         * ============================================================
+         *
+         * One API request is made even when multiple personas
+         * are selected.
+         *
+         * ============================================================
+         */
+
+        async function callGemini(prompt, apiKey) {
+
+            const models = [
+                "gemini-3.7-flash",
+                "gemini-3.6-flash",
+                "gemini-3.5-flash",
+                "gemini-2.5-flash"
+            ];
+
+            let lastError = null;
+
+            for (const model of models) {
+
+                try {
+
+                    console.log("Trying Gemini model:", model);
+
+                    const url =
+                        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+
+                    const response =
+                        await fetch(url, {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type": "application/json",
+                                "x-goog-api-key": apiKey
+                            },
+
+                            body: JSON.stringify({
+
+                                contents: [
+                                    {
+                                        role: "user",
+                                        parts: [
+                                            {
+                                                text: prompt
+                                            }
+                                        ]
+                                    }
+                                ]
+
+                            })
+
+                        });
+
+
+                    const data =
+                        await response.json();
+
+
+                    /*
+                     * If this model is temporarily unavailable,
+                     * automatically try the next model.
+                     */
+
+                    if (
+                        response.status === 503 ||
+                        response.status === 429 ||
+                        response.status === 500
+                    ) {
+
+                        console.warn(
+                            `${model} unavailable. Trying next model...`
+                        );
+
+                        lastError =
+                            new Error(
+                                `Gemini ${model} returned ${response.status}`
+                            );
+
+                        continue;
+                    }
+
+
+                    /*
+                     * Other API errors should be shown.
+                     */
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            `Gemini API error (${response.status}): ` +
+                            (data.error?.message || "Unknown error")
+                        );
+
+                    }
+
+
+                    /*
+                     * Get Gemini response.
+                     */
+
+                    if (
+                        !data.candidates ||
+                        !data.candidates[0] ||
+                        !data.candidates[0].content
+                    ) {
+
+                        throw new Error(
+                            "Gemini returned an empty response."
+                        );
+
+                    }
+
+
+                    const parts =
+                        data.candidates[0].content.parts || [];
+
+
+                    const text =
+                        parts
+                            .map(part => part.text || "")
+                            .join("\n")
+                            .trim();
+
+
+                    if (!text) {
+
+                        throw new Error(
+                            "Gemini returned an empty response."
+                        );
+
+                    }
+
+
+                    console.log(
+                        "Successfully generated response using:",
+                        model
+                    );
+
+
+                    return text;
+
+                }
+                catch (error) {
+
+                    console.error(
+                        `Error with ${model}:`,
+                        error
+                    );
+
+                    lastError = error;
+
+                }
+
+            }
+
+
+            throw new Error(
+                "All Gemini models are temporarily unavailable. " +
+                "Please wait a moment and try again. " +
+                "Last error: " +
+                (lastError?.message || "Unknown error")
+            );
+
+        }
+
+        /*
+         * ============================================================
+         * PARSE PERSONA RESPONSES
+         * ============================================================
+         */
+
+        function parseResponses(text, selectedKeys) {
+
+            const results = [];
+
+
+            selectedKeys.forEach(function (key) {
+
+                const persona =
+                    personas[key];
+
+                const marker =
+                    `[PERSONA: ${persona.name}]`;
+
+                const start =
+                    text.indexOf(marker);
+
+
+                if (start === -1) {
+
+                    return;
+
+                }
+
+
+                const contentStart =
+                    start + marker.length;
+
+
+                let nextPosition =
+                    text.length;
+
+
+                selectedKeys.forEach(function (otherKey) {
+
+                    if (otherKey === key) {
+
+                        return;
+
+                    }
+
+
+                    const otherMarker =
+                        `[PERSONA: ${personas[otherKey].name}]`;
+
+                    const position =
+                        text.indexOf(
+                            otherMarker,
+                            contentStart
+                        );
+
+
+                    if (
+                        position !== -1 &&
+                        position < nextPosition
+                    ) {
+
+                        nextPosition = position;
+
+                    }
+
+                });
+
+
+                const content =
+                    text
+                        .substring(
+                            contentStart,
+                            nextPosition
+                        )
+                        .trim();
+
+
+                results.push({
+
+                    key: key,
+
+                    name: persona.name,
+
+                    content: content
+
+                });
+
+            });
+
+
+            /*
+             * Fallback if Gemini did not follow the
+             * requested labels perfectly.
+             */
+
+            if (results.length === 0) {
+
+                selectedKeys.forEach(function (key) {
+
+                    results.push({
+
+                        key: key,
+
+                        name: personas[key].name,
+
+                        content: text
+
+                    });
+
+                });
+
+            }
+
+
+            return results;
+
+        }
+
+
+        /*
+         * ============================================================
+         * DISPLAY RESPONSES
+         * ============================================================
+         */
+
+        function displayResponses(results) {
+
+            responsesContainer.innerHTML = "";
+
+            comparisonBody.innerHTML = "";
+
+
+            results.forEach(function (result) {
+
+                const responseCard =
+                    document.createElement("div");
+
+                responseCard.className =
+                    "response-card";
+
+
+                const title =
+                    document.createElement("h3");
+
+                title.textContent =
+                    result.name;
+
+
+                const content =
+                    document.createElement("div");
+
+                content.className =
+                    "response-content";
+
+                content.textContent =
+                    result.content;
+
+
+                responseCard.appendChild(title);
+
+                responseCard.appendChild(content);
+
+                responsesContainer.appendChild(
+                    responseCard
+                );
+
+
+                /*
+                 * Comparison table
+                 */
+
+                const persona =
+                    personas[result.key];
+
+
+                const row =
+                    document.createElement("tr");
+
+
+                const personaCell =
+                    document.createElement("td");
+
+                personaCell.textContent =
+                    persona.name;
+
+
+                const focusCell =
+                    document.createElement("td");
+
+                focusCell.textContent =
+                    persona.focus;
+
+
+                const actionCell =
+                    document.createElement("td");
+
+                actionCell.textContent =
+                    persona.action;
+
+
+                row.appendChild(personaCell);
+
+                row.appendChild(focusCell);
+
+                row.appendChild(actionCell);
+
+                comparisonBody.appendChild(row);
+
+            });
+
+
+            resultsSection.style.display =
+                "block";
+
+
+            if (results.length > 1) {
+
+                comparisonSection.style.display =
+                    "block";
+
+            } else {
+
+                comparisonSection.style.display =
+                    "none";
+
+            }
+
+        }
+
+
+        /*
+         * ============================================================
+         * GENERATE BUTTON
+         * ============================================================
+         */
+
+        generateBtn.addEventListener(
+            "click",
+            async function () {
+
+                hideError();
+
+
+                const apiKey =
+                    apiKeyInput.value.trim();
+
+
+                const question =
+                    questionInput.value.trim();
+
+
+                const selectedPersonas =
+                    getSelectedPersonas();
+
+
+                /*
+                 * Validation
+                 */
+
+                if (!apiKey) {
+
+                    showError(
+                        "Please enter your Gemini API key."
+                    );
+
+                    return;
+
+                }
+
+
+                if (selectedPersonas.length === 0) {
+
+                    showError(
+                        "Please select at least one persona."
+                    );
+
+                    return;
+
+                }
+
+
+                if (!question) {
+
+                    showError(
+                        "Please enter your career-related question."
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                 * Start loading
+                 */
+
+                generateBtn.disabled =
+                    true;
+
+                loading.style.display =
+                    "block";
+
+                resultsSection.style.display =
+                    "none";
+
+
+                try {
+
+                    /*
+                     * Build ONE prompt containing
+                     * all selected personas.
+                     */
+
+                    const prompt =
+                        buildPrompt(
+                            selectedPersonas,
+                            question
+                        );
+
+
+                    /*
+                     * ONE Gemini API request
+                     */
+
+                    const responseText =
+                        await callGemini(
+                            prompt,
+                            apiKey
+                        );
+
+
+                    /*
+                     * Parse separate persona responses
+                     */
+
+                    const results =
+                        parseResponses(
+                            responseText,
+                            selectedPersonas
+                        );
+
+
+                    /*
+                     * Display responses
+                     */
+
+                    displayResponses(results);
+
+
+                }
+                catch (error) {
+
+                    console.error(error);
+
+                    showError(
+                        "Unable to generate career advice. " +
+                        "Please check your API key, internet connection, " +
+                        "and try again."
+                    );
+
+                }
+                finally {
+
+                    generateBtn.disabled =
+                        false;
+
+                    loading.style.display =
+                        "none";
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
