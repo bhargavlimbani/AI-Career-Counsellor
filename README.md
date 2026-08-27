@@ -25,8 +25,8 @@
 | **Enrollment No.** | **92301733029** |
 | **Project** | **AI Career Counsellor** |
 | **Technology** | HTML, CSS, JavaScript, Gemini API |
-| **Demo Video** | 🔗 **[https://drive.google.com/file/d/1qk47lxZliMiWVWMtfo3sHDSpBHv6h5ka/view?usp=sharing](#)** |
-| **GitHub Repository** | 🔗 **[https://github.com/bhargavlimbani/AI-Career-Counsellor.git](#)** |
+| **Demo Video** | 🔗 **[https://drive.google.com/file/d/1qk47lxZliMiWVWMtfo3sHDSpBHv6h5ka/view?usp=sharing]** |
+| **GitHub Repository** | 🔗 **[https://github.com/bhargavlimbani/AI-Career-Counsellor.git]** |
 
 ---
 
@@ -423,13 +423,13 @@ The demo video demonstrates:
 8. Persona comparison
 9. Prompt Card framework
 
-**Demo Video:** [https://drive.google.com/file/d/1qk47lxZliMiWVWMtfo3sHDSpBHv6h5ka/view?usp=sharing](#)
+**Demo Video:** https://drive.google.com/file/d/1qk47lxZliMiWVWMtfo3sHDSpBHv6h5ka/view?usp=sharing
 
 ---
 
 ## 🔗 GitHub Repository
 
-**Repository:** [https://github.com/bhargavlimbani/AI-Career-Counsellor.git](#)
+**Repository:** https://github.com/bhargavlimbani/AI-Career-Counsellor.git
 
 ---
 
